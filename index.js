@@ -34,12 +34,12 @@ app.set("view engine", "ejs");
 // ============================================================
 
 async function getBooks(sort) {
-  let query = "SELECT * FROM books ORDER BY date_read DESC"; // default: recent
+  let query = "SELECT * FROM book_notes_books ORDER BY date_read DESC"; // default: recent
 
   if (sort === "rating") {
-    query = "SELECT * FROM books ORDER BY rating DESC";
+    query = "SELECT * FROM book_notes_books ORDER BY rating DESC";
   } else if (sort === "title") {
-    query = "SELECT * FROM books ORDER BY title ASC";
+    query = "SELECT * FROM book_notes_books ORDER BY title ASC";
   }
 
   const result = await db.query(query);
@@ -77,7 +77,7 @@ app.post("/books", async (req, res) => {
 
   try {
     await db.query(
-      `INSERT INTO books (title, author, isbn, cover_url, rating, date_read, notes)
+      `INSERT INTO book_notes_books (title, author, isbn, cover_url, rating, date_read, notes)
        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [title, author, isbn, coverUrl, parseInt(rating), date_read, notes],
     );
@@ -96,7 +96,7 @@ app.post("/books/:id", async (req, res) => {
 
   try {
     await db.query(
-      `UPDATE books
+      `UPDATE book_notes_books
        SET title = $1, author = $2, isbn = $3, cover_url = $4,
            rating = $5, date_read = $6, notes = $7
        WHERE id = $8`,
@@ -114,7 +114,7 @@ app.post("/books/:id/delete", async (req, res) => {
   const { id } = req.params;
 
   try {
-    await db.query("DELETE FROM books WHERE id = $1", [id]);
+    await db.query("DELETE FROM book_notes_books WHERE id = $1", [id]);
     res.redirect("/");
   } catch (err) {
     console.error("Error deleting book:", err);

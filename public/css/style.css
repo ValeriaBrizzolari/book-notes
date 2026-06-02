@@ -60,6 +60,8 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
@@ -639,6 +641,7 @@ button {
 
 /* ----- Footer ----- */
 .site-footer {
+  margin-top: auto;
   text-align: center;
   padding: 0.4rem 1.5rem;
   border-top: 1px solid var(--cream-border);
