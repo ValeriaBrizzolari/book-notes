@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Reading Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-ornament">❧</span>
+        <h1>My Reading Log</h1>
+        <span class="header-ornament">❧</span>
+      </div>
+      <p class="header-sub">Books I've read, loved, and thought about</p>
+      <div class="header-rule"></div>
+    </div>
+  </header>
+
+  <!-- ===== CONTROLS ===== -->
+  <div class="controls-bar">
+    <div class="controls-inner">
+      <div class="sort-group">
+        <span class="sort-label">Sort by</span>
+        <a href="/?sort=rating" class="sort-pill <%= sort === 'rating' ? 'active' : '' %>">Rating</a>
+        <a href="/?sort=recent" class="sort-pill <%= sort === 'recent' ? 'active' : '' %>">Recent</a>
+        <a href="/?sort=title"  class="sort-pill <%= sort === 'title'  ? 'active' : '' %>">Title</a>
+      </div>
+      <button class="add-btn" onclick="openModal('add-modal')">+ Add a book</button>
+    </div>
+  </div>
+
+  <!-- ===== BOOK GRID ===== -->
+  <main class="main-content">
+    <% if (books.length === 0) { %>
+      <div class="empty-state">
+        <span class="empty-icon">📖</span>
+        <p>Your shelf is empty. Add your first book!</p>
+      </div>
+    <% } else { %>
+      <div class="book-grid">
+        <% books.forEach(book => { %>
+          <article class="book-card" onclick="openDetail(<%= JSON.stringify(book) %>)">
+
+        <!-- Cover -->
+<div class="book-cover-wrap">
+  <img
+    src="<%= book.cover_url %>"
+    alt="Cover of <%= book.title %>"
+    class="book-cover"
+    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    onload="if (this.naturalWidth <= 1) { this.style.display='none'; this.nextElementSibling.style.display='flex'; }"
+  />
+
+  <!-- Fallback cover if ISBN not found -->
+  <div class="book-cover-fallback" style="display:none;">
+    <span class="fallback-title"><%= book.title %></span>
+    <span class="fallback-author"><%= book.author %></span>
+  </div>
+
+  <div class="book-cover-shine"></div>
+</div>
+
+            <!-- Info -->
+            <div class="book-info">
+              <div class="book-meta-top">
+                <div class="star-row">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <span class="star <%= i <= book.rating ? 'filled' : '' %>">★</span>
+                  <% } %>
+                </div>
+                <span class="book-date"><%= new Date(book.date_read).getFullYear() %></span>
+              </div>
+              <h2 class="book-title"><%= book.title %></h2>
+              <p class="book-author">by <%= book.author %></p>
+              <% if (book.notes) { %>
+                <p class="book-notes"><%= book.notes %></p>
+              <% } %>
+              <div class="book-actions">
+                <button class="action-btn edit-btn" onclick="event.stopPropagation(); openEdit(<%= JSON.stringify(book) %>)">Edit</button>
+                <button class="action-btn delete-btn" onclick="event.stopPropagation(); confirmDelete(<%= book.id %>, '<%= book.title.replace(/'/g, "\\'") %>')">Delete</button>
+              </div>
+            </div>
+
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <!-- ===== ADD MODAL ===== -->
+  <div id="add-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'add-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+      <h2 class="modal-title">Add a book</h2>
+      <form action="/books" method="POST" class="book-form">
+        <div class="form-row">
+          <label>
+            Title
+            <div class="autocomplete-wrap">
+              <input type="text" id="add-title" name="title" required placeholder="e.g. Sapiens" autocomplete="off" />
+              <ul class="suggestions-list" id="add-suggestions"></ul>
+            </div>
+          </label>
+          <label>Author <input type="text" id="add-author" name="author" required placeholder="e.g. Yuval Noah Harari" /></label>
+        </div>
+        <div class="form-row">
+          <label>ISBN <input type="text" id="add-isbn" name="isbn" placeholder="e.g. 9780062316110" /></label>
+          <label>Date read <input type="date" name="date_read" required /></label>
+        </div>
+        <label class="rating-label">
+          Rating
+          <div class="star-picker" id="add-stars">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <span class="star-pick" data-val="<%= i %>">★</span>
+            <% } %>
+          </div>
+          <input type="hidden" name="rating" id="add-rating-val" value="0" required />
+        </label>
+        <label>Notes
+          <textarea name="notes" rows="4" placeholder="What did you think? Any passages that stuck with you?"></textarea>
+        </label>
+        <button type="submit" class="submit-btn">Add to shelf</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== EDIT MODAL ===== -->
+  <div id="edit-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'edit-modal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
+      <h2 class="modal-title">Edit book</h2>
+      <form id="edit-form" action="" method="POST" class="book-form">
+        <input type="hidden" name="_method" value="PATCH" />
+        <div class="form-row">
+          <label>Title <input type="text" name="title" id="edit-title" required /></label>
+          <label>Author <input type="text" name="author" id="edit-author" required /></label>
+        </div>
+        <div class="form-row">
+          <label>ISBN <input type="text" name="isbn" id="edit-isbn" /></label>
+          <label>Date read <input type="date" name="date_read" id="edit-date" required /></label>
+        </div>
+        <label class="rating-label">
+          Rating
+          <div class="star-picker" id="edit-stars">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <span class="star-pick" data-val="<%= i %>">★</span>
+            <% } %>
+          </div>
+          <input type="hidden" name="rating" id="edit-rating-val" value="0" />
+        </label>
+        <label>Notes
+          <textarea name="notes" id="edit-notes" rows="4"></textarea>
+        </label>
+        <button type="submit" class="submit-btn">Save changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== DELETE CONFIRM MODAL ===== -->
+  <div id="delete-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'delete-modal')">
+    <div class="modal modal--small">
+      <button class="modal-close" onclick="closeModal('delete-modal')">✕</button>
+      <h2 class="modal-title">Remove book?</h2>
+      <p class="delete-msg">Are you sure you want to remove <strong id="delete-book-title"></strong> from your shelf?</p>
+      <div class="delete-actions">
+        <button class="action-btn" onclick="closeModal('delete-modal')">Cancel</button>
+        <form id="delete-form" action="" method="POST">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="action-btn delete-btn">Yes, remove it</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DETAIL MODAL ===== -->
+  <div id="detail-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'detail-modal')">
+    <div class="modal modal--detail">
+      <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+      <div class="detail-inner">
+        <div class="detail-cover-wrap">
+          <img id="detail-cover" src="" alt="" class="detail-cover"
+            onerror="this.style.display='none'; document.getElementById('detail-fallback').style.display='flex';"
+            onload="if(this.naturalWidth < 10){ this.style.display='none'; document.getElementById('detail-fallback').style.display='flex'; }"
+          />
+          <div id="detail-fallback" class="book-cover-fallback" style="display:none;">
+  <span id="detail-fallback-title" class="fallback-title"></span>
+  <span id="detail-fallback-author" class="fallback-author"></span>
+</div>
+        </div>
+        <div class="detail-info">
+          <div class="book-meta-top">
+            <div class="star-row" id="detail-stars"></div>
+            <span class="book-date" id="detail-date"></span>
+          </div>
+          <h2 class="detail-title" id="detail-title"></h2>
+          <p class="book-author" id="detail-author"></p>
+          <div class="detail-divider"></div>
+          <p class="detail-notes" id="detail-notes"></p>
+          <p class="detail-no-notes" id="detail-no-notes" style="display:none;">No notes for this one yet.</p>
+          <div class="detail-actions">
+            <button class="action-btn edit-btn" id="detail-edit-btn" onclick="closeModal('detail-modal')">Edit</button>
+            <button class="action-btn delete-btn" id="detail-delete-btn" onclick="closeModal('detail-modal')">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>A quiet corner for books & thoughts &nbsp;·&nbsp; <span id="year"></span></p>
+  </footer>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>
