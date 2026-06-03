@@ -87,15 +87,15 @@ http://localhost:3000
 
 ### Home Page
 
-![Home Page](screenshots/homepage.png)
+![Home Page](screenshots/homepage.PNG)
 
 ### Book Details
 
-![Book Details](screenshots/book-detail.png)
+![Book Details](screenshots/book-detail.PNG)
 
 ### Add Book Modal
 
-![Add Book Modal](screenshots/add-book.png)
+![Add Book Modal](screenshots/add-book.PNG)
 
 ## What I Learned
 
