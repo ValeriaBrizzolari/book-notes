@@ -76,12 +76,15 @@ function buildCoverUrl(isbn) {
   return `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
 }
 
+// CHANGED: now passes `user` to the view so the navbar partial
+// can tell whether someone is logged in while sitting on /login
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", { user: req.user || null });
 });
 
+// CHANGED: same reason as /login above
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register", { user: req.user || null });
 });
 
 app.get("/logout", (req, res, next) => {

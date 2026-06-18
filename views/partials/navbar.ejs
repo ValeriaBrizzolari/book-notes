@@ -1,0 +1,14 @@
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">❧ My shelf 📚</a>
+    <div class="navbar-links">
+      <% if (user) { %>
+        <span class="navbar-user">👤 My Account</span>
+        <a href="/logout" class="navbar-link">🚪 Log out</a>
+      <% } else { %>
+        <a href="/login" class="navbar-link">Log in</a>
+        <a href="/register" class="navbar-link navbar-link--accent">Sign up</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
