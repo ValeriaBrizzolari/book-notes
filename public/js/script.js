@@ -2,7 +2,33 @@
 //   MY READING LOG — Client-side JS
 //   Handles: modals, star pickers, delete confirmation, footer year
 // ============================================================
+/* ----- Theme toggle ----- */
+const themeToggle = document.getElementById("theme-toggle");
+const themeIcon = document.querySelector(".theme-toggle-icon");
 
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark-mode");
+
+  if (themeIcon) {
+    themeIcon.textContent = "☀️";
+  }
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark-mode");
+
+    const isDark = document.documentElement.classList.contains("dark-mode");
+
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    if (themeIcon) {
+      themeIcon.textContent = isDark ? "☀️" : "🌙";
+    }
+  });
+}
 /* ----- Footer year ----- */
 document.getElementById("year").textContent = new Date().getFullYear();
 

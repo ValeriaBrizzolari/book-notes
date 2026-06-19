@@ -96,6 +96,44 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
+app.post("/account", requireAuth, async (req, res) => {
+  const { email, currentPassword, newPassword } = req.body;
+
+  try {
+    const result = await db.query("SELECT * FROM users WHERE id = $1", [
+      req.user.id,
+    ]);
+
+    const currentUser = result.rows[0];
+
+    if (currentUser.password) {
+      const valid =
+        currentPassword &&
+        (await bcrypt.compare(currentPassword, currentUser.password));
+
+      if (!valid) {
+        return res.redirect("/");
+      }
+    }
+
+    const newHashedPassword =
+      newPassword && newPassword.trim() !== ""
+        ? await bcrypt.hash(newPassword, saltRounds)
+        : currentUser.password;
+
+    await db.query("UPDATE users SET email = $1, password = $2 WHERE id = $3", [
+      email,
+      newHashedPassword,
+      req.user.id,
+    ]);
+
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error updating account:", err);
+    res.redirect("/");
+  }
+});
+
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -307,11 +345,16 @@ passport.use(
 );
 
 passport.serializeUser((user, cb) => {
-  cb(null, user);
+  cb(null, user.id);
 });
 
-passport.deserializeUser((user, cb) => {
-  cb(null, user);
+passport.deserializeUser(async (id, cb) => {
+  try {
+    const result = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+    cb(null, result.rows[0]);
+  } catch (err) {
+    cb(err);
+  }
 });
 
 app.listen(port, () => {
