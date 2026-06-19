@@ -28,6 +28,21 @@
   --max-w: 1100px;
 }
 
+html.dark-mode {
+  --cream: #15101f;
+  --cream-dark: #20182d;
+  --cream-border: #3a2b4f;
+  --ink: #f8efe0;
+  --ink-mid: #dbc8b2;
+  --ink-light: #b69b83;
+  --terra: #d6ad63;
+  --terra-dark: #b88c3f;
+  --terra-light: #e3c482;
+  --terra-pale: #392b44;
+  --shadow: rgba(0, 0, 0, 0.22);
+  --shadow-deep: rgba(0, 0, 0, 0.45);
+}
+
 /* ----- Reset & Base ----- */
 *,
 *::before,
@@ -62,6 +77,119 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+html.dark-mode .book-card,
+html.dark-mode .modal,
+html.dark-mode .suggestions-list {
+  background: var(--cream-dark);
+}
+
+html.dark-mode .book-form input,
+html.dark-mode .book-form textarea,
+html.dark-mode .book-form select {
+  background: #120d1a;
+  color: var(--ink);
+}
+
+html.dark-mode .controls-bar {
+  background: rgba(21, 16, 31, 0.92);
+}
+
+/* ----- Navbar ----- */
+.navbar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-border);
+}
+
+.navbar-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navbar-brand {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.navbar-link {
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+
+.navbar-link:hover {
+  background: var(--cream-dark);
+}
+
+.navbar-link--accent {
+  background: var(--terra);
+  color: #fff;
+}
+
+.navbar-link--accent:hover {
+  background: var(--terra-dark);
+}
+
+.navbar-button {
+  cursor: pointer;
+  background: none;
+  border: 1px solid transparent;
+}
+
+.theme-toggle {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--cream-border);
+  background: var(--cream-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--terra);
+  background: var(--terra-pale);
+}
+
+.account-note {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .navbar-inner {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
 }
 
 .main-content {

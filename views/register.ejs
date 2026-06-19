@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account · My Reading Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .auth-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      animation: none;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.1rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--cream-border);
+    }
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 0.6rem 1.25rem;
+      background: #fff;
+      color: var(--ink-mid);
+      border: 1px solid var(--cream-border);
+      border-radius: var(--radius);
+      text-transform: uppercase;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .google-btn:hover {
+      background: var(--cream-dark);
+      border-color: var(--ink-light);
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 1.3rem;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+    }
+    .auth-switch a {
+      color: var(--terra);
+      font-weight: 600;
+    }
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <%- include('partials/navbar') %>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-ornament">❧</span>
+        <h1>My Reading Log</h1>
+        <span class="header-ornament">❧</span>
+      </div>
+      <p class="header-sub">Start your own shelf</p>
+      <div class="header-rule"></div>
+    </div>
+  </header>
+
+  <div class="auth-wrap">
+    <div class="modal auth-card">
+      <h2 class="modal-title">Create an account</h2>
+      <form action="/register" method="POST" class="book-form">
+        <label>Email <input type="email" name="username" required /></label>
+        <label>Password <input type="password" name="password" required /></label>
+        <button type="submit" class="submit-btn">Create account</button>
+      </form>
+      <div class="auth-divider">or</div>
+      <a href="/auth/google" class="google-btn">Continue with Google</a>
+      <p class="auth-switch">Already have an account? <a href="/login">Log in</a></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>A quiet corner for books &amp; thoughts</p>
+  </footer>
+
+</body>
+</html>

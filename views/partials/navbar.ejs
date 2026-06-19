@@ -1,0 +1,87 @@
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">❧ My shelf 📚</a>
+
+    <div class="navbar-links">
+      <button
+        type="button"
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Toggle dark mode"
+      >
+        <span class="theme-toggle-icon">🌙</span>
+      </button>
+
+      <% if (user) { %>
+        <button
+          type="button"
+          class="navbar-link navbar-button"
+          onclick="openModal('account-modal')"
+        >
+          👤 My account
+        </button>
+
+        <a href="/logout" class="navbar-link">🚪 Log out</a>
+      <% } else { %>
+        <a href="/login" class="navbar-link">Log in</a>
+        <a href="/register" class="navbar-link navbar-link--accent">Sign up</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
+<% if (user) { %>
+  <div
+    id="account-modal"
+    class="modal-overlay"
+    onclick="closeOnOverlay(event, 'account-modal')"
+  >
+    <div class="modal modal--small">
+      <button
+        type="button"
+        class="modal-close"
+        onclick="closeModal('account-modal')"
+      >
+        ✕
+      </button>
+
+      <h2 class="modal-title">My account</h2>
+
+      <form action="/account" method="POST" class="book-form">
+        <label>
+          Email
+          <input
+            type="email"
+            name="email"
+            value="<%= user.email %>"
+            required
+          />
+        </label>
+
+        <% if (user.password) { %>
+          <label>
+            Current password
+            <input type="password" name="currentPassword" required />
+          </label>
+        <% } %>
+
+        <label>
+          New Book Notes password
+          <input
+            type="password"
+            name="newPassword"
+            placeholder="Leave blank to keep your current password"
+          />
+        </label>
+
+        <% if (!user.password) { %>
+          <p class="account-note">
+            You signed in with Google. You can optionally set a Book Notes password here.
+          </p>
+        <% } %>
+
+        <button type="submit" class="submit-btn">Save changes</button>
+      </form>
+    </div>
+  </div>
+<% } %>
