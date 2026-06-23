@@ -137,7 +137,7 @@ http://localhost:3000
 
 ### Account Settings
 
-![Account Settings](screenshots/account-settings.PNG)
+![Account Settings](screenshots/account-settings.png)
 
 ## What I Learned
 
